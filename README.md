@@ -1,0 +1,1 @@
+- https://github.com/styleguidist/react-docgen-typescript

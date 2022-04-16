@@ -1,0 +1,20 @@
+{
+  "name": "react-components-props-docs",
+  "version": "1.0.0",
+  "description": "- https://github.com/styleguidist/react-docgen-typescript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tyankatsu0105/react-components-props-docs.git"
+  },
+  "keywords": [],
+  "author": "tyankatsu <frips.ryilsufupe+dev@gmail.com> (https://tyankatsu.com)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tyankatsu0105/react-components-props-docs/issues"
+  },
+  "homepage": "https://github.com/tyankatsu0105/react-components-props-docs#readme"
+}
