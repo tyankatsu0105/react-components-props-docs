@@ -40,8 +40,7 @@ const getDocsInfo = (docsPath: string) => {
  * propsデータ情報テーブルを返す
  */
 const getTable = (propsInfo: docgen.ComponentDoc[]) => {
-  const tableHeader = `
-| Name   | Type   | Default | Description |
+  const tableHeader = `| Name   | Type   | Default | Description |
 | :----- | :----- | :------ | :---------- |`;
 
   const tableBody = Object.values(propsInfo[0].props)
@@ -59,17 +58,28 @@ const getTable = (propsInfo: docgen.ComponentDoc[]) => {
 };
 
 const getSection = (table: string) => {
-  const section = `
-${mark.start}
+  const section = `${mark.start}
 ${attention}
 ${sectionTitle}
 <!-- prettier-ignore-start -->
 ${table}
 <!-- prettier-ignore-end -->
-${mark.end}  
-`;
+${mark.end}`;
 
   return { section };
+};
+
+const checkMark = (docsContent: string) => {
+  const hasStartMark = docsContent.includes(mark.start);
+  if (!hasStartMark)
+    throw new Error(
+      `開始セクションがありません。\n${mark.start}\nを記入してください。`
+    );
+  const hasEndMark = docsContent.includes(mark.end);
+  if (!hasEndMark)
+    throw new Error(
+      `終了セクションがありません。\n${mark.end}\nを記入してください。`
+    );
 };
 
 /**
@@ -80,16 +90,7 @@ const insertPropsInfo = (params: {
   docsPath: string;
   docsContent: string;
 }) => {
-  const hasStartMark = params.docsContent.includes(mark.start);
-  if (!hasStartMark)
-    throw new Error(
-      `開始セクションがありません。\n${mark.start}\nを記入してください。`
-    );
-  const hasEndMark = params.docsContent.includes(mark.end);
-  if (!hasEndMark)
-    throw new Error(
-      `終了セクションがありません。\n${mark.end}\nを記入してください。`
-    );
+  checkMark(params.docsContent);
 
   const propsInfo = docgen.parse(params.componentPath, {
     propFilter: {
@@ -97,15 +98,17 @@ const insertPropsInfo = (params: {
     },
   });
   const { table } = getTable(propsInfo);
-
   const { section } = getSection(table);
 
-  let updatedContent = params.docsContent;
+  const index = {
+    start: params.docsContent.indexOf(mark.start),
+    end: params.docsContent.indexOf(mark.end) + mark.end.length,
+  };
 
-  updatedContent = updatedContent.replace(mark.end, "");
-  updatedContent = updatedContent.replace(mark.start, section);
+  const before = params.docsContent.substring(0, index.start);
+  const after = params.docsContent.substring(index.end);
 
-  writeFileSync(params.docsPath, updatedContent);
+  writeFileSync(params.docsPath, `${before}${section}${after}`);
 };
 
 const main = () => {
