@@ -47,7 +47,9 @@ const getTable = (propsInfo: docgen.ComponentDoc[]) => {
   const tableBody = Object.values(propsInfo[0].props)
     .map(
       (props) =>
-        `|${props.name}|${props.type.name}|${props.defaultValue}|${props.description}|`
+        `|${props.name}|${props.type.name}|${
+          props.defaultValue
+        }|${props.description.split("\n").join("<br>")}|`
     )
     .join("\n");
 
@@ -90,7 +92,9 @@ const insertPropsInfo = (params: {
     );
 
   const propsInfo = docgen.parse(params.componentPath, {
-    propFilter: {},
+    propFilter: {
+      skipPropsWithoutDoc: true,
+    },
   });
   const { table } = getTable(propsInfo);
 
