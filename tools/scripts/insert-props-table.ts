@@ -12,6 +12,9 @@ const attention =
 
 const sectionTitle = "## Props";
 
+const escape = (str: string) =>
+  str.split("|").join("\\|").split("\n").join("<br>");
+
 /**
  * propsを解析したいcomponetの情報を返す
  */
@@ -40,15 +43,15 @@ const getDocsInfo = (docsPath: string) => {
  * propsデータ情報テーブルを返す
  */
 const getTable = (propsInfo: docgen.ComponentDoc[]) => {
-  const tableHeader = `| Name   | Type   | Default | Description |
-| :----- | :----- | :------ | :---------- |`;
+  const tableHeader = `|Name|Type|Required|Default|Description|
+|:-----|:-----|:------|:------|:----------|`;
 
   const tableBody = Object.values(propsInfo[0].props)
     .map(
       (props) =>
-        `|${props.name}|${props.type.name}|${
+        `|${props.name}|${escape(props.type.name)}|${props.required && "✅"}|${
           props.defaultValue
-        }|${props.description.split("\n").join("<br>")}|`
+        }|${escape(props.description)}|`
     )
     .join("\n");
 
@@ -92,11 +95,9 @@ const insertPropsInfo = (params: {
 }) => {
   checkMark(params.docsContent);
 
-  const propsInfo = docgen.parse(params.componentPath, {
-    propFilter: {
-      skipPropsWithoutDoc: true,
-    },
-  });
+  const propsInfo = docgen.parse(params.componentPath, {});
+  console.log(JSON.stringify(propsInfo, null, 2));
+
   const { table } = getTable(propsInfo);
   const { section } = getSection(table);
 
