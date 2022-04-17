@@ -1,22 +1,26 @@
-import * as React from 'react'
+import * as React from "react";
 
 import { Input } from "./components/Input";
+import { Button } from "./components/Button";
 
 const App = () => (
   <>
-    <Input 
+    <Input
       inputProps={{
-        type: 'text',
+        type: "text",
       }}
     />
-    <Input 
-      isError 
-      errorMessage='this is an error message' 
+    <Input
+      isError
+      errorMessage="this is an error message"
       inputProps={{
-        type: 'text',
+        type: "text",
       }}
     />
+    <Button variant="contained">contained</Button>
+    <Button variant="outlined">outlined</Button>
+    <Button variant="text">text</Button>
   </>
-)
+);
 
-export default App
+export default App;

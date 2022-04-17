@@ -43,13 +43,16 @@ const getDocsInfo = (docsPath: string) => {
  * propsデータ情報テーブルを返す
  */
 const getTable = (propsInfo: docgen.ComponentDoc[]) => {
-  const tableHeader = `|Name|Type|Required|Default|Description|
-|:-----|:-----|:------|:------|:----------|`;
+  const tableHeader = `|Name|Type|Defined by|Required|Default|Description|
+|:-----|:-----|:-----|:------|:------|:----------|`;
 
   const tableBody = Object.values(propsInfo[0].props)
+    .sort((a, b) => (a.required === b.required ? 0 : a.required ? -1 : 1))
     .map(
       (props) =>
-        `|${props.name}|${escape(props.type.name)}|${props.required && "✅"}|${
+        `|${props.name}|${escape(props.type.name)}|${props.declarations
+          .map((d) => d.fileName)
+          .join("<br>")}|${props.required && "✅"}|${
           props.defaultValue
         }|${escape(props.description)}|`
     )
@@ -96,7 +99,6 @@ const insertPropsInfo = (params: {
   checkMark(params.docsContent);
 
   const propsInfo = docgen.parse(params.componentPath, {});
-  console.log(JSON.stringify(propsInfo, null, 2));
 
   const { table } = getTable(propsInfo);
   const { section } = getSection(table);
